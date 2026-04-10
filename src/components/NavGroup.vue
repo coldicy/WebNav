@@ -20,7 +20,8 @@
         
          <div class="func">
           <!-- 打开添加item的表单弹窗 -->
-          <el-button size="small" type="primary" plain @click="openAddDialog">+ 添加</el-button>
+          <el-button size="small" type="primary" plain @click="openAddDialog">+ 添加导航</el-button>
+          <el-button size="small" type="danger" plain @click="deleteGroup">删除分组</el-button>
           <!-- 置顶分组 -->
           <el-button size="small" type="primary" plain circle @click="topGroup"><el-icon><Top /></el-icon></el-button>
          </div>
@@ -187,12 +188,21 @@ const resetForm = () => {
 }
 
 ////
-/* 置顶分组 */
+/* 置顶当前分组 */
 const topGroup = () => {
   store.groups = store.groups.filter((g) => {
     return g.id !== props.group.id
   })
   store.groups.unshift(props.group)
+  store.updateGroupOrder(store.groups)
+}
+
+////
+/* 删除当前分组 */
+const deleteGroup = () => {
+  store.groups = store.groups.filter((g) => {
+    return g.id !== props.group.id
+  })
   store.updateGroupOrder(store.groups)
 }
 
