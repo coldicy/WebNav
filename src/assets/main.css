@@ -1,0 +1,51 @@
+:root {
+  /* // 定义css变量 亮色模式默认值 */
+  /* 背景色 */
+  --bg-color: #f5f7fa;
+  --card-bg: #ffffff;
+
+  /* 文字颜色 */
+  --text-primary: #242424;
+  --text-secondary: #606266;
+
+  /* 边框颜色 */
+  --border-color: #ebeef5;
+
+  /* 悬停效果 */
+  --hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* // 基础样式 */
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: #242424;
+  background-color: #f5f7fa;
+}
+/* 暗黑模式样式（当 html 有 dark 类时生效 */
+/* @vueuse/core 的 useDark 会自动给 <html> 添加/移除 "dark" 类 */
+html.dark {
+  /* 覆盖亮色模式的变量值 */
+  --bg-color: #1a1a2e; 
+  --card-bg: #16213e; 
+  --text-primary: #eaeaea; /* 文字变浅 */
+  --text-secondary: #a0a0a0; /* 次要文字 */
+  --border-color: #333344; 
+  --hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* 暗黑模式下背景色应用 */
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  min-height: 100vh;
+  /* 确保背景色过渡平滑 */
+  /* 让背景色和文字颜色变化时有 0.3 秒的过渡动画*/
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+#app {
+  width: 100%;
+}
