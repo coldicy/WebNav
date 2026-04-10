@@ -1,18 +1,18 @@
 <template>
   <div class="home">
     <header class="top-bar">
+      <!-- 用户信息 退出 -->
+      <div class="userinfo">
+        <span>{{ authStore.currentUser }}</span>
+        <el-button type="danger" plain size="small" @click="authStore.logout">退出登录</el-button>
+      </div>
       <h1>Web Nav</h1>
       <div class="actions">
         <el-button type="primary" @click="handleAddGroup">+ 新建分组</el-button>
         <el-button type="danger" plain @click="clearData">清空数据</el-button>
         <!-- 暗黑模式切换按钮 -->
-        <el-button 
-          :type="isDark ? 'warning' : 'default'" 
-          :icon="isDark ? 'Moon' : 'Sunny'"
-          circle 
-          @click="handleToggleDark"
-          title="切换主题"
-        />
+        <el-button :type="isDark ? 'warning' : 'default'" :icon="isDark ? 'Moon' : 'Sunny'" circle
+          @click="handleToggleDark" title="切换主题" />
       </div>
     </header>
 
@@ -32,7 +32,7 @@
       <template #item="{ element }">
         <NavGroup :group="element" />
       </template>
-    </draggable> -->
+</draggable> -->
 
     <div v-for="group in filteredGroups">
       <NavGroup :group="group"></NavGroup>
@@ -51,8 +51,10 @@ import { computed } from 'vue'
 // 新增：导入@vueuse/core的主题工具
 import { useDark, useToggle } from '@vueuse/core'
 import { ElMessageBox } from 'element-plus'
+import { useAuthStore } from '@/stores/authStore'
 
 ////
+const authStore = useAuthStore()
 const store = useNavStore()
 const onGroupDragEnd = () => store.updateGroupOrder(store.groups)
 const clearData = () => {
@@ -68,7 +70,7 @@ const filteredGroups = computed(() => {
   if (!keyword.value || !keyword.value.trim()) return store.groups;
   return store.groups.map((group) => ({
     ...group,
-    items: group.items.filter((item) => item.title.toLowerCase().includes(keyword.value.toLowerCase())) 
+    items: group.items.filter((item) => item.title.toLowerCase().includes(keyword.value.toLowerCase()))
   })).filter(group => group.items.length > 0)
 })
 
@@ -82,7 +84,7 @@ const isDark = useDark({
 // useToggle 会返回一个函数，调用它就自动切换 isDark 的值
 const toggleDark = useToggle(isDark)
 const handleToggleDark = () => {
-  console.log('切换前 isDark：',isDark.value)
+  console.log('切换前 isDark：', isDark.value)
   toggleDark()
   console.log('切换后 isDark：', isDark.value)
 }
@@ -109,29 +111,45 @@ const handleAddGroup = async () => {
 </script>
 
 <style scoped>
-.home { 
-  max-width: 1280px; 
-  margin: 0 auto; 
-  padding: 24px 20px; 
+.home {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 20px;
 }
-.top-bar { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  margin-bottom: 24px; 
-  padding-bottom: 16px; 
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
   /* 底边框用变量 */
-  border-bottom: 1px solid var(--border-color); 
+  border-bottom: 1px solid var(--border-color);
 }
-.top-bar h1 { 
-  margin: 0; 
-  font-size: 22px; 
-  font-weight: 700; 
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--text-primary);
 }
-.groups-container { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-  gap: 20px; 
+
+.groups-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.userinfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 16px;
+  padding: 4px 12px;
+  background: var(--card-bg);
+  border-radius: 20px;
+  font-size: 14px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 </style>

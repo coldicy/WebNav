@@ -19,11 +19,15 @@ export function safeOpenUrl(url: string): void {
   window.open(url, '_blank', 'noopener,noreferrer')
 }
 
-const STORAGE_KEY = 'web_nav_data_v1'
-export function saveData(data: any): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+const DATA_VERSION = 'v1'
+const STORAGE_KEY_PREFIX = `web_nav_data_${DATA_VERSION}_`
+export function getStorageKey(userId: string): string {
+  return `${STORAGE_KEY_PREFIX}${userId}`
 }
-export function loadData(): any {
-  const raw = localStorage.getItem(STORAGE_KEY)
+export function saveData(userId: string, data: any): void {
+  localStorage.setItem(getStorageKey(userId), JSON.stringify(data))
+}
+export function loadData(userId: string): any {
+  const raw = localStorage.getItem(getStorageKey(userId))
   return raw ? JSON.parse(raw) : null
 }
