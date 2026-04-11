@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from 'vue'
+import { authApi } from "@/api";
+import { ElMessage, install } from "element-plus";
 
 const VERSION = 'v1'
 const USERS_KEY = 'web_nav_auth_users_' + VERSION
@@ -15,36 +17,35 @@ export const useAuthStore = defineStore('auth', () => {
   const isLogined = computed(() => !!currentUser.value)
 
   // 登录
-  function login(username: string, password: string): boolean {
-    const user = users.value.find((u) => {
-      return u.username === username && u.password === password
-    })
-    if (user) {
-      currentUser.value = username
-      // 保存当前用户
-      localStorage.setItem(CURRENT_USER_KEY, username)
+  async function login(username: string, password: string) {
+    try {
+      const res = await authApi.login(username, password)
+      currentUser.value = res.username
+      // 虽然已经引入了后端和数据库，但是仍在浏览器中缓存 当前登录用户的名字
+      localStorage.setItem(CURRENT_USER_KEY, res.username)
+      console.log('authStore.ts login(): 登录成功')
       return true
+    } catch (error: any) {
+      if (error instanceof Error) {
+        throw error // 抛出原始错误
+      }
+      throw new Error(String(error || '登录失败'))
     }
-    return false
   }
 
   // 注册
-  function register(username: string, password: string): boolean {
-    // 检查是否存在此用户
-    const ifExsit = users.value.some((u) => {
-      return u.username === username
-    })
-    if (ifExsit) {
-      console.log('注册用户已存在')
-      return false
+  async function register(username: string, password: string) {
+    try {
+      await authApi.register(username, password)
+      // 注册后自动登录
+      await login(username, password)
+      return true
+    } catch (error: any) {
+      if (error instanceof Error) {
+        throw error //抛出原始错误
+      }
+      throw new Error(String(error || '注册失败'))
     }
-    // 如果不存在用户 就保存账户密码
-    users.value.push({username, password})
-    localStorage.setItem(USERS_KEY, JSON.stringify(users.value))
-    // 注册成功 自动登录
-    login(username, password)
-
-    return true
   }
 
   // 退出登录

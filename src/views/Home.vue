@@ -57,9 +57,11 @@ import { useAuthStore } from '@/stores/authStore'
 const authStore = useAuthStore()
 const store = useNavStore()
 const onGroupDragEnd = () => store.updateGroupOrder(store.groups)
+// 考虑上这个清空全部数据的操作还是不给了吧
 const clearData = () => {
   if (confirm('确定要清空所有导航数据吗？')) {
-    localStorage.removeItem('web_nav_data_v1')
+    store.groups = []
+    store.updateGroupOrder(store.groups)
     location.reload()
   }
 }

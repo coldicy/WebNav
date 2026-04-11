@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import { authApi } from '@/api';
 import { useAuthStore } from '@/stores/authStore';
 import { ElMessage, FormRules } from 'element-plus';
 import { FormInstance } from 'element-plus';
@@ -57,15 +58,27 @@ const handleAuth = async (action: 'login' | 'register') => {
     if (!valid) return
     loading.value = true
 
-    const success = action === 'login'
-      ? authStore.login(form.value.username, form.value.password)
-      : authStore.register(form.value.username, form.value.password)
+    try {
+      const success = action === 'login'
+        ? await authStore.login(form.value.username, form.value.password)
+        : await authStore.register(form.value.username, form.value.password)
 
-    if (success) {
-      ElMessage.success(action === 'login' ? '登录成功' : '注册并登录成功')
-    } else {
-      ElMessage.error(action === 'login' ? '用户名或密码错误' : '用户名已存在')
+      if (success) {
+        if (action === 'login') {
+          console.log('loginview.vue: 登录成功')
+        } else {
+          // 注册成功
+          ElMessage.success('注册成功')
+        }
+      } else {
+        // 理论上说不可能进入这个else分支，因为如果上面失败会直接进入catch块
+        ElMessage.error(action === 'login' ? '用户名或密码错误1' : '用户名已存在')
+      }
+    } catch (error: any) {
+      ElMessage.error(error instanceof Error ? error.message : String(error))
+      console.log('loginview: ', error instanceof Error ? error.message : String(error))
     }
+
     loading.value = false
   })
 }
