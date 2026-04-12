@@ -11,7 +11,7 @@
         <el-button type="primary" @click="handleAddGroup">+ 新建分组</el-button>
         <el-button type="danger" plain @click="clearData">清空数据</el-button>
         <!-- 暗黑模式切换按钮 -->
-        <el-button :type="isDark ? 'warning' : 'default'" :icon="isDark ? 'Moon' : 'Sunny'" circle
+        <el-button :type="isDark ? 'warning' : 'default'" :icon="isDark ? Moon : Sunny" circle
           @click="handleToggleDark" title="切换主题" />
       </div>
     </header>
@@ -43,6 +43,8 @@
 </template>
 
 <script setup lang="ts">
+// 手动导入图标
+import { Moon, Sunny } from '@element-plus/icons-vue'
 import NavGroup from '@/components/NavGroup.vue'
 import { useNavStore } from '@/stores/navStore'
 import { ref } from 'vue'

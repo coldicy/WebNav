@@ -84,6 +84,7 @@ import NavItem from './NavItem.vue'
 import type { NavGroup } from '@/types'
 import { useNavStore } from '@/stores/navStore'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import { Top } from '@element-plus/icons-vue'
 
 const props = defineProps<{ group: NavGroup }>()
 const store = useNavStore()
