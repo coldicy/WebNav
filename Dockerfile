@@ -26,6 +26,9 @@ RUN mkdir -p /app/data
 # 设置环境变量
 # 存储数据库文件所在地址
 ENV DB_PATH=/app/data/nav.db
+# 生产环境
+ENV NODE_ENV=production
+ENV PORT=3000
 
 EXPOSE 3000
 CMD ["node", "server.js"]

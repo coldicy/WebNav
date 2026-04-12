@@ -12,7 +12,7 @@ import fs from 'fs'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const server = express()
 // 监听端口号
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 // 基础功能组件
 server.use(cors())  //允许前端跨域请求

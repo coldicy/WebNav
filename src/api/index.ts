@@ -1,6 +1,7 @@
 import { RequestError } from "@/error/RequestError"
 
-const API_BASE = '/api'
+// 如果是开发模式就使用本地ip
+const API_BASE = import.meta.env.DEV ? 'http://localhost:3000/api' : '/api'
 
 async function request(url: string, options?: RequestInit) {
   const res = await fetch(`${API_BASE}${url}`, {
