@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from 'vue'
 import { authApi } from "@/api";
-import { ElMessage, install } from "element-plus";
 
 const VERSION = 'v1'
 const USERS_KEY = 'web_nav_auth_users_' + VERSION

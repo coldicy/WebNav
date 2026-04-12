@@ -1,6 +1,6 @@
 import { RequestError } from "@/error/RequestError"
 
-const API_BASE = 'http://localhost:3000/api'
+const API_BASE = '/api'
 
 async function request(url: string, options?: RequestInit) {
   const res = await fetch(`${API_BASE}${url}`, {

@@ -25,3 +25,4 @@ dist-ssr
 
 # sqlite数据库文件
 data.db*
+data/

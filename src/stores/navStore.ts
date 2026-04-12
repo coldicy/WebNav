@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { NavGroup, NavItem } from '@/types'
-import { generateId, saveData, loadData } from '@/utils'  //添加后端和sqlite后，已经用不上这两个加载 和 保存数据的方法了，他们是使用localstorage实现的
+import { generateId } from '@/utils'  //添加后端和sqlite后，已经用不上这两个加载 和 保存数据的方法了，他们是使用localstorage实现的
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/stores/authStore'
 import { watch } from 'vue'

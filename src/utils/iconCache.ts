@@ -47,7 +47,7 @@ export function cacheIcon(domain: string, base64: string): void {
         return -(a[1].timestamp - b[1].timestamp)
       })
       const toRemove = entries.slice(MAX_CACHE_ITEMS)
-      toRemove.forEach(([domain, cachedIcon]) => {
+      toRemove.forEach(([domain]) => {
         delete cache[domain]
       })
     }

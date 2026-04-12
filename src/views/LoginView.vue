@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import { authApi } from '@/api';
 import { useAuthStore } from '@/stores/authStore';
 import { ElMessage, FormRules } from 'element-plus';
 import { FormInstance } from 'element-plus';

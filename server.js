@@ -2,18 +2,34 @@ import express from 'express'
 import cors from 'cors'
 import Database from 'better-sqlite3'
 import bcrypt from 'bcryptjs'
-import {ip} from 'address'
 
+import {ip} from 'address'
+import {fileURLToPath} from 'url'
+import path from 'path'
+import fs from 'fs'
+
+//所在文件夹目录
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const server = express()
 // 监听端口号
 const PORT = 3000
 
-// 基础中间件
+// 基础功能组件
 server.use(cors())  //允许前端跨域请求
 server.use(express.json()) // 解析json请求体
+// vue构建的静态文件
+server.use(express.static(path.join(__dirname, 'dist')))
 
+// 数据库地址
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'data.db')
+console.log('数据库地址是:', DB_PATH)
+// 确保路径存在
+if (!fs.existsSync(path.dirname(DB_PATH))) {
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true })
+  console.log('创建数据库目录成功: ', path.dirname(DB_PATH))
+}
 // 初始化 sqlite数据库
-const db = new Database('data.db')
+const db = new Database(DB_PATH)
 db.pragma('journal_mode = WAL') // 提升并发
 
 // 创建用户表 和 导航数据表
@@ -90,9 +106,13 @@ server.post('/api/nav/:username', (req, res) => {
   res.json({success: true})
 })
 
+// 默认路由 捕获所有未匹配的路径
+server.get('/{*path}', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
 // 启动服务
 server.listen(PORT, '0.0.0.0', () => {
   console.log('local: http://localhost:'+PORT)
   console.log(`network: http://${ip()}:`+PORT)
-  console.log('数据库文件地址：' + process.cwd() + '/data.db')
 })

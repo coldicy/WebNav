@@ -41,7 +41,7 @@ export function getIconFallback(title: string): {text: string; color: string} {
   ]
 
   // 用标题的字符码总和 作为索引 保证相同标题 颜色一致
-  const hash = title.split('').reduce((preRes, value, index, array) => {
+  const hash = title.split('').reduce((preRes, value) => {
     return preRes + value.charCodeAt(0)
   }, 0)
   const color = colors[hash % colors.length]
