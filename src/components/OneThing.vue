@@ -11,8 +11,9 @@
 </template>
 
 <script setup lang="ts">
+import { getOneThing, setOneThing } from '@/utils/setting';
 import { ElMessage } from 'element-plus';
-import { nextTick, ref, Ref } from 'vue';
+import { nextTick, onMounted, ref, Ref } from 'vue';
 
 //// 一些状态变量
 const isEditting = ref(true)
@@ -40,6 +41,8 @@ const saveEdit = (): void => {
     }
     sync()
     isEditting.value = false
+  } else {
+    thing.value = ''
   }
   
 }
@@ -53,8 +56,15 @@ const cancelEdit = () => {
 //// 保存到localstorage
 const sync = () => {
   ElMessage.success('save thing')
+  setOneThing(thing.value)
 }
 
+
+onMounted(() => {
+  thing.value = getOneThing()
+  isEditting.value = false
+
+})
 </script>
 
 <style scoped>
