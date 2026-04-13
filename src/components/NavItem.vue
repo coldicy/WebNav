@@ -52,6 +52,7 @@
       :close-on-click-modal="true"
       @close="resetForm"
       @opened="autoFocusFirstInput"
+      @dragstart.stop
     >
       <el-form
         ref="formRef"
@@ -89,7 +90,7 @@
 import { useNavStore } from '@/stores/navStore';
 import { useStateStore } from '@/stores/stateStore';
 import type { NavItem } from '@/types'
-import { safeOpenUrl } from '@/utils'
+import { deepEqualObj1, safeOpenUrl } from '@/utils'
 import { getFaviconUrl, extractDomain, getIconFallback } from '@/utils/favicon'
 import { getCachedIcon, cacheIcon, deleteCachedIcon } from '@/utils/iconCache'
 import { ElMessage, ElMessageBox, FormInstance, FormRules, InputInstance } from 'element-plus';
@@ -151,19 +152,31 @@ const autoFocusFirstInput = () => {
 
 // 提交
 const submitEdit = async () => {
-  if (!formRef.value) return
+  if (!formRef.value) {
+    dialogVisible.value =false
+    return
+  }
   try {
     await formRef.value.validate() //校验失败会直接到catch
     isSubmitting.value = true
 
+    // 如果数据没变化 直接return
+    if (deepEqualObj1(form.value, props.item)) {
+      console.log('编辑navitem 数据没变化')
+      return
+    }
+
     // 更新item
     store.updateItem(props.groupId, props.item.id, form.value)
+    // 更新成功，可能修改了icon图标
     ElMessage.success('更新导航成功')
-    dialogVisible.value = false
+
   } catch {
     // 校验失败 更新失败
     ElMessage.error('更新导航失败')
+    
   } finally {
+    dialogVisible.value = false
     isSubmitting.value = false
   }
 }
@@ -231,7 +244,7 @@ const loadFavicon = () => {
   }
 
   // 缓存未命中 走网络请求
-  faviconUrl.value = props.item.icon ? props.item.icon : getFaviconUrl(iconDomain.value, iconSize)
+  faviconUrl.value = props.item.icon?.trim() ? props.item.icon : getFaviconUrl(iconDomain.value, iconSize)
 
 }
 

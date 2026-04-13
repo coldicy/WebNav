@@ -26,6 +26,7 @@ declare module 'vue' {
     FuncBar: typeof import('./components/FuncBar.vue')['default']
     NavGroup: typeof import('./components/NavGroup.vue')['default']
     NavItem: typeof import('./components/NavItem.vue')['default']
+    OneThing: typeof import('./components/OneThing.vue')['default']
     Search: typeof import('./components/Search.vue')['default']
     TimeShow: typeof import('./components/TimeShow.vue')['default']
   }

@@ -27,11 +27,17 @@
 
     <!-- 侧面常驻信息栏 -->
     <div class="sidebar bar">
+      <!-- 时间组件 -->
       <TimeShow />
       <ElDivider />
+      <!-- 全局操作 -->
       <FuncBar />
       <ElDivider />
+      <!-- 搜索框 -->
       <Search v-model:keyword="keyword" />
+      <ElDivider />
+      <!-- 快速写下 当前需要做的事 -->
+       <OneThing />
     </div>
 
     <main class="main">

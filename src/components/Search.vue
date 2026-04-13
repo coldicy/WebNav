@@ -15,7 +15,7 @@ import { getEngineName, setEngineName } from '@/utils/setting';
 const emit = defineEmits(['update:keyword'])
 const keyword = ref('')
 // 正在使用的搜索引擎的名字
-const engineName = ref<string>('')
+const engineName = ref('')
 // 如果是百度 对应蓝色 谷歌 对应黄色
 const engineColor = computed(() => {
   if (engineName.value === '百度') return 'primary'
