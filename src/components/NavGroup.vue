@@ -21,19 +21,14 @@
             <AddLocation />
           </el-icon>
         </el-button>
-        <el-popconfirm width="160" title="确定要删除这个分组吗？">
-          <template #reference>
-            <el-button title="删除分组" size="small" type="default" plain>
-              <el-icon>
-                <FolderDelete />
-              </el-icon>
-            </el-button>
-          </template>
-          <template #actions="{ confirm, cancel }">
-            <el-button size="small" type="default" text @click="cancel">取消</el-button>
-            <el-button size="small" type="danger" text @click="deleteGroup">删除</el-button>
-          </template>
-        </el-popconfirm>
+
+        <el-button title="删除分组" size="small" type="default" plain @click="deleteGroup">
+          <el-icon>
+            <FolderDelete />
+          </el-icon>
+        </el-button>
+
+
 
         <!-- 置顶分组 -->
         <el-button title="置顶分组" size="small" type="default" plain @click="topGroup">
@@ -94,7 +89,7 @@ import draggable from 'vuedraggable'
 import NavItem from './NavItem.vue'
 import type { NavGroup } from '@/types'
 import { useNavStore } from '@/stores/navStore'
-import { ElMessage, FormInstance, FormRules, ElPopconfirm } from 'element-plus'
+import { ElMessage, FormInstance, FormRules, ElMessageBox } from 'element-plus'
 import { Top, FolderDelete, AddLocation } from '@element-plus/icons-vue'
 
 const props = defineProps<{ group: NavGroup }>()
@@ -211,7 +206,12 @@ const topGroup = () => {
 
 ////
 /* 删除当前分组 */
-const deleteGroup = () => {
+const deleteGroup = async () => {
+  await ElMessageBox.confirm(`确定要删除分组 [ ${props.group.name} ] 吗？`, '删除确认', {
+    confirmButtonText: '删除',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
   store.groups = store.groups.filter((g) => {
     return g.id !== props.group.id
   })

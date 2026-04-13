@@ -19,15 +19,17 @@ export function safeOpenUrl(url: string): void {
   window.open(url, '_blank', 'noopener,noreferrer')
 }
 
-const DATA_VERSION = 'v1'
-const STORAGE_KEY_PREFIX = `web_nav_data_${DATA_VERSION}_`
-export function getStorageKey(userId: string): string {
-  return `${STORAGE_KEY_PREFIX}${userId}`
-}
-export function saveData(userId: string, data: any): void {
-  localStorage.setItem(getStorageKey(userId), JSON.stringify(data))
-}
-export function loadData(userId: string): any {
-  const raw = localStorage.getItem(getStorageKey(userId))
-  return raw ? JSON.parse(raw) : null
-}
+/* 下面这段代码用于保存数据到localstorage，现在改用了后端express和sqlite，已经不需要了 */ 
+
+// const DATA_VERSION = 'v1'
+// const STORAGE_KEY_PREFIX = `web_nav_data_${DATA_VERSION}_`
+// export function getStorageKey(userId: string): string {
+//   return `${STORAGE_KEY_PREFIX}${userId}`
+// }
+// export function saveData(userId: string, data: any): void {
+//   localStorage.setItem(getStorageKey(userId), JSON.stringify(data))
+// }
+// export function loadData(userId: string): any {
+//   const raw = localStorage.getItem(getStorageKey(userId))
+//   return raw ? JSON.parse(raw) : null
+// }

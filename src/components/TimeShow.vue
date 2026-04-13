@@ -69,9 +69,12 @@ onUnmounted(() => {
 
 <style scoped>
 #time-show {
+  position: relative;
+  left: 10px;
   display: flex;
   align-items: start;
   flex-direction: column;
+  width: 160px;
 }
 .time {
   font-size: 2em;

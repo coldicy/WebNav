@@ -7,11 +7,21 @@
           <FolderAdd />
         </el-icon>
       </el-button>
-      <el-button :title="authStore.currentUser + ',退出登录'" circle type="danger" @click="authStore.logout">
-        <el-icon>
-          <User />
-        </el-icon>
-      </el-button>
+      <el-popconfirm :title="authStore.currentUser + '，确定退出登录吗？'">
+        <template #reference>
+          <el-button :title="authStore.currentUser + '，退出登录'" circle type="default" >
+            <el-icon>
+              <User />
+            </el-icon>
+          </el-button>
+        </template>
+        <template #actions="{ confirm, cancel }">
+          <el-button size="small" text @click="cancel">取消</el-button>
+          <el-button size="small" type="danger" text @click="authStore.logout">退出</el-button>
+        </template>
+
+      </el-popconfirm>
+
 
     </div>
 
@@ -28,10 +38,6 @@
       <div class="title">
         <h1></h1>
       </div>
-
-
-      
-
 
       <div v-for="group in filteredGroups">
         <NavGroup :group="group"></NavGroup>

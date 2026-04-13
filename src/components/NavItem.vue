@@ -176,15 +176,11 @@ const resetForm = () => {
 // 删除按钮 删除item
 const handleDelete = async () => {
   try {
-    await ElMessageBox.confirm(`确定要删除[${props.item.title}]吗？`, '删除确认', {
-      confirmButtonText: '删除',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
     store.removeItem(props.groupId, props.item.id)
     ElMessage.success('删除成功')
   } catch {
     // 用户取消
+    ElMessage.error('删除失败')
   }
 }
 
@@ -299,7 +295,7 @@ onMounted(() => {
 .nav-item-wrapper {
   position: relative;
   width: 200px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   /* flex-grow: 1; */
 }
 
