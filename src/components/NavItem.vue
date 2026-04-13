@@ -295,6 +295,15 @@ watch(() => props.item.icon, () => {
   }
   loadFavicon()
 })
+
+// 监听模态框的开启状态， 如果开启模态框 则通过全局状态 关闭draggable的拖拽能力
+watch(() => dialogVisible.value, () => {
+  if (dialogVisible.value) {
+    stateStore.gStateIfDraggable = false;
+  } else {
+    stateStore.gStateIfDraggable = true;
+  }
+})
 // 组件挂载时加载图标
 onMounted(() => {
   loadFavicon()

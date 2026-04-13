@@ -42,7 +42,7 @@
 
     <div class="group-body">
       <!-- 可拖拽分组 -->
-      <draggable v-model="group.items" tag="div" group="nav" item-key="id" class="groups" animation="200"
+      <draggable :disabled="!stateStore.gStateIfDraggable" v-model="group.items" tag="div" group="nav" item-key="id" class="groups" animation="200"
         @end="onDragEnd">
         <template #item="{ element }">
           <div>
@@ -91,9 +91,11 @@ import type { NavGroup } from '@/types'
 import { useNavStore } from '@/stores/navStore'
 import { ElMessage, FormInstance, FormRules, ElMessageBox } from 'element-plus'
 import { Top, FolderDelete, AddLocation } from '@element-plus/icons-vue'
+import { useStateStore } from '@/stores/stateStore'
 
 const props = defineProps<{ group: NavGroup }>()
 const store = useNavStore()
+const stateStore = useStateStore()
 
 //// 新增 双击重命名group名字
 // 编辑状态控制
