@@ -15,13 +15,17 @@ declare module 'vue' {
     ElCard: typeof import('element-plus/es')['ElCard']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDialog: typeof import('element-plus/es')['ElDialog']
+    ElDiv: typeof import('element-plus/es')['ElDiv']
     ElEmpty: typeof import('element-plus/es')['ElEmpty']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    FuncBar: typeof import('./components/FuncBar.vue')['default']
     NavGroup: typeof import('./components/NavGroup.vue')['default']
     NavItem: typeof import('./components/NavItem.vue')['default']
+    Search: typeof import('./components/Search.vue')['default']
+    TimeShow: typeof import('./components/TimeShow.vue')['default']
   }
 }

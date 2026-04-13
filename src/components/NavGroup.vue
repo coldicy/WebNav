@@ -1,60 +1,72 @@
 <template>
-  <el-card class="nav-group" >
-    <template #header>
-      <div class="header">
-        <!-- 双击后进入输入框 否则展示分组标题 -->
-        <el-input
-          v-if="isEditing"
-          v-model="editingName"
-          size="small"
-          class="edit-input"
-          @blur="saveName"
-          @keyup.enter="saveName"
-          @keyup.esc="cancelEdit"
-          ref="inputRef"
-          clearable
-          maxlength="15"
-          show-word-limit
-        ></el-input>
-        <h3 v-else @dblclick="startEdit" class="group-title">{{ group.name }}</h3>
-        
-         <div class="func">
-          <!-- 打开添加item的表单弹窗 -->
-          <el-button size="small" type="primary" plain @click="openAddDialog">+ 添加导航</el-button>
-          <el-button size="small" type="danger" plain @click="deleteGroup">删除分组</el-button>
-          <!-- 置顶分组 -->
-          <el-button size="small" type="primary" plain circle @click="topGroup"><el-icon><Top /></el-icon></el-button>
-         </div>
-        
-      </div>
-    </template>
 
-    <!-- 可拖拽分组 -->
-    <draggable v-model="group.items" group="nav" item-key="id" class="items-grid" animation="200" @end="onDragEnd">
-      <template #item="{ element }">
-        <NavItem :item="element" :group-id="group.id" />
-      </template>
-    </draggable>
+  <div class="nav-group">
+
+
+
+    <div class="group-header" @mouseenter="showFunc = true" @mouseleave="showFunc = false">
+      <!-- 双击后进入输入框 否则展示分组标题 -->
+      <div class="group-title">
+        <el-input v-if="isEditing" v-model="editingName" size="default" class="edit-input" @blur="saveName"
+          @keyup.enter="saveName" @keyup.esc="cancelEdit" ref="inputRef" clearable maxlength="15"
+          show-word-limit></el-input>
+        <h3 v-else @dblclick="startEdit" class="group-name">{{ group.name }}</h3>
+      </div>
+
+
+      <div class="func" v-show="showFunc">
+        <!-- 打开添加item的表单弹窗 -->
+        <el-button title="添加导航" size="small" type="default" plain @click="openAddDialog">
+          <el-icon>
+            <AddLocation />
+          </el-icon>
+        </el-button>
+        <el-popconfirm width="160" title="确定要删除这个分组吗？">
+          <template #reference>
+            <el-button title="删除分组" size="small" type="default" plain>
+              <el-icon>
+                <FolderDelete />
+              </el-icon>
+            </el-button>
+          </template>
+          <template #actions="{ confirm, cancel }">
+            <el-button size="small" type="default" text @click="cancel">取消</el-button>
+            <el-button size="small" type="danger" text @click="deleteGroup">删除</el-button>
+          </template>
+        </el-popconfirm>
+
+        <!-- 置顶分组 -->
+        <el-button title="置顶分组" size="small" type="default" plain @click="topGroup">
+          <el-icon>
+            <Top />
+          </el-icon>
+        </el-button>
+      </div>
+
+    </div>
+
+    <div class="group-body">
+      <!-- 可拖拽分组 -->
+      <draggable v-model="group.items" tag="div" group="nav" item-key="id" class="groups" animation="200"
+        @end="onDragEnd">
+        <template #item="{ element }">
+          <div>
+            <NavItem :item="element" :group-id="group.id" />
+          </div>
+        </template>
+      </draggable>
+    </div>
+
+
 
     <!-- 添加导航项的表单弹窗 -->
-    <el-dialog
-      v-model="dialogVisible"
-      title="添加导航"
-      width="420px"
-      :close-on-click-modal="true"
-      @opened="autoFocusFirstInput"
-      @close="resetForm"
-    >
-      <el-form
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        label-width="80px"
-        label-position="top"
-        @submit.prevent="submitForm"
-      >
+    <el-dialog v-model="dialogVisible" title="添加导航" width="420px" :close-on-click-modal="true"
+      @opened="autoFocusFirstInput" @close="resetForm">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" label-position="top"
+        @submit.prevent="submitForm">
         <el-form-item label="网站名称" prop="title">
-          <el-input ref="firstFormInputRef" v-model="form.title" placeholder="请输入网站标题" clearable maxlength="20" show-word-limit/>
+          <el-input ref="firstFormInputRef" v-model="form.title" placeholder="请输入网站标题" clearable maxlength="20"
+            show-word-limit />
         </el-form-item>
         <el-form-item label="网站地址" prop="url">
           <el-input v-model="form.url" placeholder="请输入网站地址" clearable />
@@ -73,8 +85,7 @@
       </template>
 
     </el-dialog>
-
-  </el-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -83,8 +94,8 @@ import draggable from 'vuedraggable'
 import NavItem from './NavItem.vue'
 import type { NavGroup } from '@/types'
 import { useNavStore } from '@/stores/navStore'
-import { ElMessage, FormInstance, FormRules } from 'element-plus'
-import { Top } from '@element-plus/icons-vue'
+import { ElMessage, FormInstance, FormRules, ElPopconfirm } from 'element-plus'
+import { Top, FolderDelete, AddLocation } from '@element-plus/icons-vue'
 
 const props = defineProps<{ group: NavGroup }>()
 const store = useNavStore()
@@ -134,14 +145,14 @@ const formDefault = {
   icon: '',
   description: ''
 }
-const form = ref({...formDefault})
+const form = ref({ ...formDefault })
 
 // element plus 表单验证规则
 const rules: FormRules = {
-  title: [{required: true, message: '请输入网站名称', trigger: 'blur'}],
+  title: [{ required: true, message: '请输入网站名称', trigger: 'blur' }],
   url: [
-    {required: true, message: '请输入链接地址', trigger: 'blur'},
-    {type: 'url', message: '格式错误，需包含http://或http://', trigger: 'blur'}
+    { required: true, message: '请输入链接地址', trigger: 'blur' },
+    { type: 'url', message: '格式错误，需包含http://或http://', trigger: 'blur' }
   ]
 }
 
@@ -207,6 +218,9 @@ const deleteGroup = () => {
   store.updateGroupOrder(store.groups)
 }
 
+//// 当鼠标移动到分组时才展示 功能组的所有操作按钮
+const showFunc = ref(false)
+
 //// 拖拽后执行
 const onDragEnd = () => {
   store.updateItemOrder(props.group.id, props.group.items)
@@ -214,36 +228,31 @@ const onDragEnd = () => {
 </script>
 
 <style scoped>
-.nav-group {
-  height: 100%;
-  /* 分组卡片背景 */
-  background-color: var(--card-bg);
-  /* 边框颜色 */
-  border: 1px solid var(--border-color);
-}
+.nav-group {}
 
-.header {
+.group-header {
   display: flex;
+  gap: 2em;
   justify-content: space-between;
   align-items: center;
-  /* padding-bottom: 12px; */
-  /* 头部底边框 */
-  /* border-bottom: 1px solid var(--border-color); */
+  height: 4em;
+  margin-bottom: 0em;
 }
 
-.header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
+.group-header .group-title {}
 
-.group-title {
+.group-header .group-title .group-name {
   cursor: text;
-  user-select: none;  /* 防止双击选中文字 */
+  /* 防止双击选中文字 */
+  user-select: none;
   transition: color 0.2s;
+
+  font-weight: 400;
+  font-size: 18px;
+  color: rgba(100, 100, 100, 1);
 }
-.group-title:hover {
+
+.group-header .group-title .group-name:hover {
   color: #409eff;
 }
 
@@ -252,11 +261,18 @@ const onDragEnd = () => {
   margin-right: 8px;
 }
 
-.items-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 12px;
-  min-height: 60px;
-  padding: 8px 0;
+/* //// 组内item的布局 */
+.group-body .groups {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-content: start;
+  column-gap: 20px;
+
+}
+
+/* 填充flex的span */
+.group-body .groups .fill-flex-span {
+  width: 160px;
 }
 </style>

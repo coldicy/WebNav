@@ -1,12 +1,12 @@
 :root {
   /* // 定义css变量 亮色模式默认值 */
   /* 背景色 */
-  --bg-color: #f5f7fa;
+  --bg-color: #fafafa;
   --card-bg: #ffffff;
 
   /* 文字颜色 */
   --text-primary: #242424;
-  --text-secondary: #606266;
+  --text-secondary: rgba(100, 100, 100, .8);
 
   /* 边框颜色 */
   --border-color: #ebeef5;
@@ -14,11 +14,14 @@
   /* 悬停效果 */
   --hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
+  /* navItem::before hover shadow */
+  --hover-shadow-nav-before: 0 10px 50px 30px rgba(255, 255, 255, .9);
+
   /* // 基础样式 */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   color: #242424;
-  background-color: #f5f7fa;
+  background-color: var(--bg-color);
 }
 /* 暗黑模式样式（当 html 有 dark 类时生效 */
 /* @vueuse/core 的 useDark 会自动给 <html> 添加/移除 "dark" 类 */
@@ -30,7 +33,7 @@ html.dark {
   --text-secondary: #a0a0a0; /* 次要文字 */
   --border-color: #333344; 
   --hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-
+  --hover-shadow-nav-before: 0 10px 20px 0px rgba(100, 100, 100, .9);
   /* 暗黑模式下背景色应用 */
   background-color: var(--bg-color);
   color: var(--text-primary);

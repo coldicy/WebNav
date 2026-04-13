@@ -1,8 +1,9 @@
 <template>
-  <div class="nav-item-wrapper" @mouseenter="showActions = true" @mouseleave="showActions = false">
+  <!-- 鼠标放在导航卡片上 如果是编辑模式 展示操作栏 离开则不显示 -->
+  <div class="nav-item-wrapper" @mouseenter="stateStore.gStateEditMode ? showActions = true : showActions = false" @mouseleave="showActions = false">
     <!-- 卡片样式 -->
-    <el-tooltip :content="item.description" placement="top" :disabled="!item.description">
-      <el-card class="nav-item" shadow="hover" @click="handleClick">
+    <el-tooltip :content="item.url" placement="bottom" :disabled="!item.url">
+      <div class="nav-item" @click="handleClick">
         <div class="content">
           <div class="icon-wrapper">
             <!-- 主图标: 自动加载 -->
@@ -26,9 +27,10 @@
           </div>
           <div class="info">
             <h4>{{ item.title }}</h4>
+            <h6>{{ item.description }}</h6>
           </div>
         </div>
-      </el-card>
+      </div>
     </el-tooltip>
 
     <!-- 悬浮操作按钮 -->
@@ -85,15 +87,18 @@
 
 <script setup lang="ts">
 import { useNavStore } from '@/stores/navStore';
+import { useStateStore } from '@/stores/stateStore';
 import type { NavItem } from '@/types'
 import { safeOpenUrl } from '@/utils'
 import { getFaviconUrl, extractDomain, getIconFallback } from '@/utils/favicon'
 import { getCachedIcon, cacheIcon, deleteCachedIcon } from '@/utils/iconCache'
 import { ElMessage, ElMessageBox, FormInstance, FormRules, InputInstance } from 'element-plus';
+import { Edit, Delete } from '@element-plus/icons-vue';
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{ item: NavItem, groupId: string }>()
 const store = useNavStore()
+const stateStore = useStateStore()
 
 // 点击item 打开网页
 const handleClick = () => safeOpenUrl(props.item.url)
@@ -290,29 +295,55 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* //// 包裹nav-item的外层容器 */
 .nav-item-wrapper {
   position: relative;
+  width: 200px;
+  margin-bottom: 20px;
+  /* flex-grow: 1; */
 }
+
+/* //// 用于展示导航项目的 卡片 */
 .nav-item {
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s;
   /* 卡片背景用变量 */
   background-color: var(--card-bg);
+  /* 卡片边框 */
+  border: 1px solid var(--border-color);
+
+  border-radius: 10px;
+  padding: 0px;
 }
 
 .nav-item:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--hover-shadow);
+  transform: translate(0px, -5px);
+  box-shadow: 0px 10px 20px 0px rgba(100, 100, 100, .1);
 }
 
-.content {
+.nav-item:hover::before {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 1px;
+  content: "";
+  background-color: transparent;
+  box-shadow: var(--hover-shadow-nav-before);
+}
+
+
+/* // 卡片内容区域 flex布局 里面包含图片区 和 文字区 */
+.nav-item .content {
   display: flex;
+  height: 80px;
   align-items: center;
   gap: 10px;
-  padding: 4px 0;
+  padding: 15px;
 }
 
-.icon-wrapper {
+/* // 卡片内容区域的 图片区 */
+.content .icon-wrapper {
   width: 32px;
   height: 32px;
   display: flex;
@@ -324,7 +355,7 @@ onMounted(() => {
 }
 
 /* img标签 */
-.icon-wrapper .site-icon {
+.content .icon-wrapper .site-icon {
   width: 32px;
   height: 32px;
   border-radius: 8px;
@@ -347,6 +378,12 @@ onMounted(() => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* 卡片内容区域的 文字区 */
+.content .info {
+  /* 作为flex item允许无限压缩 */
+  min-width: 0;
+  overflow-y: auto;
+}
 .info h4 {
   margin: 0;
   font-size: 14px;
@@ -356,7 +393,18 @@ onMounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+}
+
+.info h6 {
+  /* 设置两行显示，超出部分显示... */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  margin-top: 2px;
+  line-height: 1.3;
+  color: var(--text-secondary);
 }
 
 /* //// 操作按钮定位 */

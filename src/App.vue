@@ -1,7 +1,11 @@
 <template>
   <el-config-provider>
     <LoginView v-if="!authStore.isLogined" />
-    <Home v-else />
+    <div v-else>
+
+      <Home />
+    </div>
+    
   </el-config-provider>
 </template>
 

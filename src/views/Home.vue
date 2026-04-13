@@ -1,60 +1,63 @@
 <template>
   <div class="home">
-    <header class="top-bar">
-      <!-- 用户信息 退出 -->
-      <div class="userinfo">
-        <span>{{ authStore.currentUser }}</span>
-        <el-button type="danger" plain size="small" @click="authStore.logout">退出登录</el-button>
-      </div>
-      <h1>Web Nav</h1>
-      <div class="actions">
-        <el-button type="primary" @click="handleAddGroup">+ 新建分组</el-button>
-        <el-button type="danger" plain @click="clearData">清空数据</el-button>
-        <!-- 暗黑模式切换按钮 -->
-        <el-button :type="isDark ? 'warning' : 'default'" :icon="isDark ? Moon : Sunny" circle
-          @click="handleToggleDark" title="切换主题" />
-      </div>
-    </header>
+    <!-- 固定在home右下角的操作集合 -->
+    <div class="fixed-actions">
+      <el-button title="添加分组" circle type="default" @click="handleAddGroup">
+        <el-icon>
+          <FolderAdd />
+        </el-icon>
+      </el-button>
+      <el-button :title="authStore.currentUser + ',退出登录'" circle type="danger" @click="authStore.logout">
+        <el-icon>
+          <User />
+        </el-icon>
+      </el-button>
 
-    <div class="search">
-      <el-input v-model="keyword" placeholder="搜索..."></el-input>
     </div>
 
-    <!-- 暂时有问题，整个项目的draggable得做修改 -->
-    <!-- <draggable
-      v-model="filteredGroups"
-      item-key="id"
-      class="groups-container"
-      animation="200"
-      @end="onGroupDragEnd"
-      :delay="2000"
-    >
-      <template #item="{ element }">
-        <NavGroup :group="element" />
-      </template>
-</draggable> -->
-
-    <div v-for="group in filteredGroups">
-      <NavGroup :group="group"></NavGroup>
+    <!-- 侧面常驻信息栏 -->
+    <div class="sidebar bar">
+      <TimeShow />
+      <ElDivider />
+      <FuncBar />
+      <ElDivider />
+      <Search v-model:keyword="keyword" />
     </div>
 
-    <el-empty v-if="store.groups.length === 0" description="暂无导航，点击右上角添加" />
+    <main class="main">
+      <div class="title">
+        <h1></h1>
+      </div>
+
+
+      
+
+
+      <div v-for="group in filteredGroups">
+        <NavGroup :group="group"></NavGroup>
+      </div>
+
+      <el-empty v-if="store.groups.length === 0" description="暂无导航，点击右上角添加" />
+    </main>
+
   </div>
 </template>
 
 <script setup lang="ts">
 // 手动导入图标
-import { Moon, Sunny } from '@element-plus/icons-vue'
+import { Moon, Sunny, FolderAdd, User } from '@element-plus/icons-vue'
 import NavGroup from '@/components/NavGroup.vue'
 import { useNavStore } from '@/stores/navStore'
+import { useStateStore } from '@/stores/stateStore'
 import { ref } from 'vue'
 import { computed } from 'vue'
 // 新增：导入@vueuse/core的主题工具
 import { useDark, useToggle } from '@vueuse/core'
-import { ElMessageBox } from 'element-plus'
+import { ElDivider, ElMessageBox } from 'element-plus'
 import { useAuthStore } from '@/stores/authStore'
 
 ////
+const stateStore = useStateStore()
 const authStore = useAuthStore()
 const store = useNavStore()
 // const onGroupDragEnd = () => store.updateGroupOrder(store.groups)
@@ -76,21 +79,11 @@ const filteredGroups = computed(() => {
     items: group.items.filter((item) => item.title.toLowerCase().includes(keyword.value.toLowerCase()))
   })).filter(group => group.items.length > 0)
 })
-
-////暗黑模式切换
-// 新增：创建暗黑模式响应式状态
-//isDark 是一个ref布尔值 true是暗黑模式
-const isDark = useDark({
-  storageKey: 'web-nav-theme',
-})
-// 创建切换函数
-// useToggle 会返回一个函数，调用它就自动切换 isDark 的值
-const toggleDark = useToggle(isDark)
-const handleToggleDark = () => {
-  console.log('切换前 isDark：', isDark.value)
-  toggleDark()
-  console.log('切换后 isDark：', isDark.value)
+// 接收从子组件Search更新来的值 修改keyword的值
+const updateKeyword = (value: string) => {
+  keyword.value = value
 }
+
 
 //// 修改addGroup的交互
 const handleAddGroup = async () => {
@@ -114,10 +107,64 @@ const handleAddGroup = async () => {
 </script>
 
 <style scoped>
+/* //// 最外层wrapper */
 .home {
-  max-width: 1280px;
+  position: relative;
+  display: flex;
+  max-width: 2560px;
   margin: 0 auto;
-  padding: 24px 20px;
+}
+
+/* //// 固定在左侧的 侧边栏 */
+.home .sidebar {
+  padding-top: calc(2em + 25px);
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 2em;
+}
+
+/* //// 固定在home区域右下角的 操作集合 */
+.home .fixed-actions {
+  position: fixed;
+  right: 20px;
+  bottom: 50px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+}
+
+.home .fixed-actions .el-button {
+  margin: 0;
+}
+
+
+/* //// 侧面边栏 */
+.bar {
+  height: 100vh;
+  width: 280px;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  flex-grow: 0;
+  background-color: rgba(43, 43, 43, 1);
+
+  position: sticky;
+  top: 0;
+
+  overflow-y: auto;
+}
+
+/* //// 右侧主体部分 */
+.main {
+  flex-grow: 1;
+  padding: 2em;
+  padding-top: 1em;
 }
 
 .top-bar {
@@ -135,12 +182,6 @@ const handleAddGroup = async () => {
   font-size: 22px;
   font-weight: 700;
   color: var(--text-primary);
-}
-
-.groups-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
 }
 
 .userinfo {
