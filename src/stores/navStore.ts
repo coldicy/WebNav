@@ -138,5 +138,5 @@ export const useNavStore = defineStore('nav', () => {
   })
 
   return { groups, addGroup, addItem, updateGroupOrder, updateItemOrder, 
-    removeGroup, updateGroupName, updateItem, removeItem }
+    removeGroup, updateGroupName, updateItem, removeItem, sync }
 })
