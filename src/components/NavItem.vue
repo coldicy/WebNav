@@ -239,7 +239,7 @@ const loadFavicon = () => {
   if (cached) {
     faviconUrl.value = cached
     iconError.value = false
-    console.log(`图标缓存命中：${props.item.title}`)
+    // console.log(`图标缓存命中：${props.item.title}`)
     return
   }
 
@@ -270,7 +270,7 @@ const handleIconLoaded = (e: Event) => {
       console.log('图标已缓存：' + props.item.title)
     } catch (error) {
       // 捕获跨域污染或者绘制失败 静默跳过
-      console.log('图标缓存跳过（绘制失败 或 跨域限制）: ' + props.item.title)
+      // console.log('图标缓存跳过（绘制失败 或 跨域限制）: ' + props.item.title)
     }
   }
 }

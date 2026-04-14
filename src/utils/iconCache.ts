@@ -71,7 +71,7 @@ export function deleteCachedIcon(domain: string): void {
   sync(cache)
 }
 
-// 清空缓存
+// 清空缓存 用于测试
 export function clearIconCache(): void {
   localStorage.removeItem(CACHE_KEY)
   console.log('图标缓存已清空')

@@ -1,7 +1,7 @@
 <template>
   <div class="func-bar">
     <div class="bar">
-      <el-button title="切换主题" circle :type="isDark ? 'success' : 'default'" :icon="isDark ? Moon : Sunny"
+      <el-button title="切换主题" circle :type="isDark ? 'warning' : 'default'" :icon="isDark ? Moon : Sunny"
         @click="handleToggleDark"></el-button>
       <el-button title="编辑模式" circle :type="stateStore.gStateEditMode ? 'success' : 'default'" :icon="EditPen"
         @click="handleEditMode"></el-button>
@@ -35,9 +35,9 @@ const isDark = stateStore.gStateDarkMode = useDark({
 // useToggle 会返回一个函数，调用它就自动切换 isDark 的值
 const toggleDark = useToggle(isDark)
 const handleToggleDark = () => {
-  console.log('切换前 isDark：', isDark.value)
+
   toggleDark()
-  console.log('切换后 isDark：', isDark.value)
+
 }
 
 </script>
